@@ -1,4 +1,6 @@
 pub use num_traits::Num;
+use std::cell::Ref;
+use std::borrow::Borrow;
 
 pub enum EnumAlignment{
     A8, A16, A32, A64
@@ -12,11 +14,30 @@ pub fn alignment_of(a: EnumAlignment) -> u32{
     }
 }
 
-pub trait Alignment {}
-pub struct A8; impl Alignment for A8{}
-pub struct A16; impl Alignment for A16{}
-pub struct A32; impl Alignment for A32{}
-pub struct A64; impl Alignment for A64{}
+pub trait Alignment {fn val()->u32;}
+pub struct A8; impl Alignment for A8{fn val() -> u32{8}}
+pub struct A16; impl Alignment for A16{fn val() -> u32{16}}
+pub struct A32; impl Alignment for A32{fn val() -> u32{32}}
+pub struct A64; impl Alignment for A64{fn val() -> u32{64}}
+
+pub trait Packing {fn val()->u32;}
+pub struct P2; impl Packing for P2{fn val() ->u32{2}}
+pub struct P4; impl Packing for P4{fn val() ->u32{4}}
+pub struct P8; impl Packing for P8{fn val() ->u32{8}}
+pub struct P16; impl Packing for P16{fn val() ->u32{16}}
+pub struct P32; impl Packing for P32{fn val() ->u32{32}}
+pub struct P64; impl Packing for P64{fn val() ->u32{64}}
+
+pub trait Packet<T, P: Packing, A: Alignment> {
+    type ArrayT;
+    type IterT: ExactSizeIterator<Item=T>;
+
+    fn data_arr(&self) -> &Self::ArrayT;
+    fn data_arr_mut(&self) -> &mut Self::ArrayT;
+
+    fn data_iter(&self) -> Self::IterT;
+}
+
 
 pub trait AlignedPacket<T: Copy + Clone>{
     type ArrayT;

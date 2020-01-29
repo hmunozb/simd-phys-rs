@@ -1,5 +1,7 @@
 use core::ops::{Add, AddAssign, Mul, MulAssign, SubAssign, Sub, Neg};
 use num_traits::{Zero};
+use rand::Rng;
+use rand_distr::{StandardNormal, Distribution};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(C, align(32))]
@@ -53,13 +55,23 @@ unsafe fn mul_assign_4xf64(a: &mut Aligned4xf64, b: &Aligned4xf64){
 }
 
 impl Aligned4xf64{
-    fn map<F>(&self, f: F) -> Aligned4xf64
+    pub fn map<F>(&self, f: F) -> Aligned4xf64
         where F: Fn(f64) -> f64{
         let mut c = Aligned4xf64::default();
         for (c, &a) in c.dat.iter_mut().zip(self.dat.iter()){
             *c = f(a);
         }
         c
+    }
+}
+
+impl Distribution<Aligned4xf64> for StandardNormal{
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Aligned4xf64 {
+        let mut sample = Aligned4xf64::default();
+        for s in sample.dat.iter_mut(){
+            *s = StandardNormal.sample(rng);
+        }
+        sample
     }
 }
 

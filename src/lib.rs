@@ -1,4 +1,4 @@
-#![no_std]
+//#![no_std]
 /// Support for SIMD-optimizable computation with stable Rust
 ///
 
