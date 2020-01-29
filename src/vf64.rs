@@ -1,5 +1,5 @@
 use core::ops::{Add, AddAssign, Mul, MulAssign, SubAssign, Sub, Neg};
-use num_traits::{Zero};
+use num_traits::{Zero, One};
 use rand::Rng;
 use rand_distr::{StandardNormal, Distribution};
 
@@ -101,6 +101,17 @@ impl Zero for Aligned4xf64{
         self.dat.iter().all(|a| a.is_zero())
     }
 }
+
+impl One for Aligned4xf64{
+    fn one() -> Self {
+        Self{dat: [1.0; 4]}
+    }
+
+    fn is_one(&self ) -> bool{
+        self.dat.iter().all(|a| a.is_one())
+    }
+}
+
 impl Add for Aligned4xf64{
     type Output = Self;
 
