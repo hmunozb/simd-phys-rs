@@ -185,12 +185,7 @@ impl AddAssign for Aligned4xf64{
         }
     }
 }
-impl MulAssign<f64> for Aligned4xf64{
-    #[allow(unreachable_code)]
-    fn mul_assign(&mut self, rhs: f64) {
-        for a in self.dat.iter_mut(){ *a *= rhs} ;
-    }
-}
+
 impl MulAssign<Aligned4xf64> for Aligned4xf64{
     #[allow(unreachable_code)]
     fn mul_assign(&mut self, rhs: Aligned4xf64) {
@@ -206,6 +201,12 @@ impl Mul<Aligned4xf64> for Aligned4xf64{
         let mut me = self;
         me *= rhs;
         me
+    }
+}
+impl MulAssign<f64> for Aligned4xf64{
+    #[allow(unreachable_code)]
+    fn mul_assign(&mut self, rhs: f64) {
+        for a in self.dat.iter_mut(){ *a *= rhs} ;
     }
 }
 impl Mul<f64> for Aligned4xf64{
@@ -228,6 +229,20 @@ impl Div<Aligned4xf64> for Aligned4xf64{
     type Output = Self;
 
     fn div(self, rhs: Aligned4xf64) -> Self::Output {
+        let mut me = self;
+        me /= rhs;
+        me
+    }
+}
+impl DivAssign<f64> for Aligned4xf64{
+    #[allow(unreachable_code)]
+    fn div_assign(&mut self, rhs: f64) {
+        for a in self.dat.iter_mut(){ *a /= rhs} ;
+    }
+}
+impl Div<f64> for Aligned4xf64{
+    type Output = Self;
+    fn div(self, rhs: f64) -> Self::Output {
         let mut me = self;
         me /= rhs;
         me
