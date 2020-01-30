@@ -6,6 +6,9 @@ use num_traits::Num;
 use rand::Rng;
 use rand_distr::{StandardNormal, Distribution};
 use std::ops::{Div, DivAssign};
+use alga::general::{Ring, AbstractGroup, Additive, TwoSidedInverse, AbstractMagma, AbstractMonoid,
+                    AbstractSemigroup, AbstractQuasigroup, AbstractLoop, Identity, AbstractRing,
+                    Multiplicative, AbstractRingCommutative, AbstractGroupAbelian};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(C, align(32))]
@@ -272,6 +275,41 @@ impl Neg for Aligned4xf64{
     }
 }
 
+
+impl Identity<Additive> for Aligned4xf64{
+    fn identity() -> Self {
+        Self::zero()
+    }
+}
+impl Identity<Multiplicative> for Aligned4xf64{
+    fn identity() -> Self {
+        Self::one()
+    }
+}
+impl AbstractMagma<Additive> for Aligned4xf64{
+    fn operate(&self, right: &Self) -> Self {
+        *self + *right
+    }
+}
+impl AbstractMagma<Multiplicative> for Aligned4xf64{
+    fn operate(&self, right: &Self) -> Self {
+        *self * *right
+    }
+}
+impl TwoSidedInverse<Additive> for Aligned4xf64{
+    fn two_sided_inverse(&self) -> Self {
+        -*self
+    }
+}
+impl AbstractQuasigroup<Additive> for Aligned4xf64{ }
+impl AbstractSemigroup<Additive> for Aligned4xf64{ } impl AbstractSemigroup<Multiplicative> for Aligned4xf64{ }
+impl AbstractLoop<Additive> for Aligned4xf64{ }
+impl AbstractMonoid<Additive> for Aligned4xf64{ } impl AbstractMonoid<Multiplicative> for Aligned4xf64{ }
+impl AbstractGroup<Additive> for Aligned4xf64{}
+impl AbstractGroupAbelian<Additive> for Aligned4xf64{}
+
+impl AbstractRing for Aligned4xf64{ }
+impl AbstractRingCommutative for Aligned4xf64{ }
 
 
 //#[cfg(test)]
