@@ -1,3 +1,5 @@
+use crate::aligned::{Packet, P4, A32};
+
 use core::ops::{Add, AddAssign, Mul, MulAssign, SubAssign, Sub, Neg};
 use num_traits::{Zero, One};
 use rand::Rng;
@@ -8,6 +10,16 @@ use rand_distr::{StandardNormal, Distribution};
 pub struct Aligned4xf64{
     pub dat: [f64; 4]
 }
+
+//impl<'a> Packet<f64, P4, A32> for Aligned4xf64{
+//    type ArrayT = [f64; 4];
+//    type SliceT = &'a [f64; 4];
+//    type SliceMutT = &'a mut [f64; 4];
+//
+//    fn into_data(self) -> Self::ArrayT {
+//        self.dat
+//    }
+//}
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(C, align(64))]

@@ -3,8 +3,12 @@ use alga::general::{ClosedAdd};
 use alga::general::{ClosedMul, ClosedSub};
 use core::ops::{Sub, Mul};
 use crate::vf64::Aligned4xf64;
+use nalgebra::{Vector3, Matrix3, Matrix};
 use num_traits::Zero;
 use num_traits::float::FloatCore;
+
+pub type Vector3d4xf64 = Vector3<Aligned4xf64>;
+pub type Matrix3d4xf64 = Matrix3<Aligned4xf64>;
 
 pub fn dot_product<T>(
     a: &[T; 3], b: &[T; 3])  -> T
@@ -91,6 +95,53 @@ pub fn cross_exponential_3d(
 
 }
 
+pub fn cross_exponential_vector3d(
+    a: &Vector3d4xf64,
+    exp_a: &mut Matrix3d4xf64
+){
+    let (ax_sq, ay_sq, az_sq) = (a[0]*a[0], a[1]*a[1], a[2]*a[2]);
+    let a_sq = a[0]*a[0] + a[1]*a[1] + a[2]*a[2];
+    let mut a_norm = Aligned4xf64::default();
+    for (v_norm, &v_sq) in a_norm.dat.iter_mut().zip(a_sq.dat.iter()){
+        *v_norm = v_sq.sqrt();
+    }
+    //todo: use parallelizable versions of cos, sin
+    let rc_a_norm = a_norm.map(|v| v.recip());
+
+    let mut c_arr = Aligned4xf64::zero();
+    let mut s_arr = Aligned4xf64::zero();
+    for( (c, s), &a ) in c_arr.dat.iter_mut().zip(s_arr.dat.iter_mut()).zip(a_norm.dat.iter()){
+        let sc = f64::sin_cos(a);
+        *s = sc.0; *c = sc.1;
+    }
+
+    let a_norm = a_norm.map(|v| if v.abs() < f64::epsilon(){ 1.0} else { v});
+
+    let mut omega_mat : Matrix3d4xf64 = Zero::zero();
+    omega_mat[(0,1)] = -a[2] ; omega_mat[(0,2)] =  a[1];
+    omega_mat[(1,0)] =  a[2] ; omega_mat[(1,2)] = -a[0];
+    omega_mat[(2,0)] = -a[1] ; omega_mat[(2,1)] =  a[0];
+
+
+    let mut omega_sq_mat : Matrix3d4xf64 = Zero::zero();
+    omega_sq_mat[(0,0)] = -(ay_sq + az_sq);  omega_sq_mat[(0,1)] = a[0] * a[1];  omega_sq_mat[(0,2)] = a[0] * a[2];
+    omega_sq_mat[(1,0)] = omega_sq_mat[1]; omega_sq_mat[(1,1)] = -(ax_sq + az_sq); omega_sq_mat[(1,2)] = a[1] * a[2];
+    omega_sq_mat[(2,0)] = omega_sq_mat[2]; omega_sq_mat[(2,1)] = omega_sq_mat[5]; omega_sq_mat[(2,2)] = -(ax_sq + ay_sq);
+
+
+    let sinc_a_norm = s_arr * rc_a_norm;
+    omega_mat *= sinc_a_norm;
+
+    let cosc_a_norm =(-c_arr + 1.0) * rc_a_norm * rc_a_norm;
+    omega_sq_mat *= cosc_a_norm;
+
+    //let mut exp_a = omega_mat;
+    *exp_a = Matrix3::identity() + omega_mat + omega_sq_mat;
+//    exp_a[0] += 1.0; exp_a[4] += 1.0; exp_a[8] += 1.0;
+//    for (v, w) in exp_a.iter_mut().zip(omega_sq_mat.iter()){
+//        *v += *w;
+//    }
+}
 #[cfg(test)]
 mod tests{
     use std;

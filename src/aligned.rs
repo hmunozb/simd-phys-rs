@@ -1,7 +1,6 @@
 pub use num_traits::Num;
 use std::cell::Ref;
 use std::borrow::Borrow;
-
 pub enum EnumAlignment{
     A8, A16, A32, A64
 }
@@ -28,14 +27,24 @@ pub struct P16; impl Packing for P16{fn val() ->u32{16}}
 pub struct P32; impl Packing for P32{fn val() ->u32{32}}
 pub struct P64; impl Packing for P64{fn val() ->u32{64}}
 
-pub trait Packet<T, P: Packing, A: Alignment> {
-    type ArrayT;
-    type IterT: ExactSizeIterator<Item=T>;
+pub trait Packet<T, P: Packing, A: Alignment>
+where for<'b> &'b<Self as Packet<T, P, A>>::ArrayT : IntoIterator,
+      for<'b> &'b mut <Self as Packet<T, P, A>>::ArrayT : IntoIterator,
+      for<'b> &'b<<Self as Packet<T, P, A>>::ArrayT as IntoIterator>::IntoIter : ExactSizeIterator,
+      for<'b> &'b mut <<Self as Packet<T, P, A>>::ArrayT as IntoIterator>::IntoIter : ExactSizeIterator
+{
+    type ArrayT : IntoIterator<Item=T>;
+    //type SliceT : IntoIterator<Item=T>;
+    //type SliceMutT : IntoIterator<Item=T>;
 
-    fn data_arr(&self) -> &Self::ArrayT;
-    fn data_arr_mut(&self) -> &mut Self::ArrayT;
-
-    fn data_iter(&self) -> Self::IterT;
+    fn into_data(self) -> Self::ArrayT;
+    fn data_iter(&self) -> &(<Self::ArrayT as IntoIterator>::IntoIter);
+    fn data_iter_mut(&mut self) -> &mut (<Self::ArrayT as IntoIterator>::IntoIter);
+//    fn data_arr(&self) -> &Self::ArrayT;
+//    fn data_arr_mut(&self) -> &mut Self::ArrayT;
+//
+//    fn into_iter(self) -> Self::IterT;
+//    fn data_iter(&self) -> Self::IterT;
 }
 
 
