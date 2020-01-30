@@ -2,8 +2,10 @@ use crate::aligned::{Packet, P4, A32};
 
 use core::ops::{Add, AddAssign, Mul, MulAssign, SubAssign, Sub, Neg};
 use num_traits::{Zero, One};
+use num_traits::Num;
 use rand::Rng;
 use rand_distr::{StandardNormal, Distribution};
+use std::ops::{Div, DivAssign};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(C, align(32))]
@@ -214,6 +216,24 @@ impl Mul<f64> for Aligned4xf64{
         me
     }
 }
+impl DivAssign<Aligned4xf64> for Aligned4xf64{
+    #[allow(unreachable_code)]
+    fn div_assign(&mut self, rhs: Aligned4xf64) {
+        for (a, &b) in self.dat.iter_mut().zip(rhs.dat.iter()){
+            *a /= b;
+        }
+    }
+}
+impl Div<Aligned4xf64> for Aligned4xf64{
+    type Output = Self;
+
+    fn div(self, rhs: Aligned4xf64) -> Self::Output {
+        let mut me = self;
+        me /= rhs;
+        me
+    }
+}
+
 impl Neg for Aligned4xf64{
     type Output = Self;
 

@@ -14,7 +14,7 @@ std = []
 alga = "0.9.2"
 nalgebra = "0.19.0"
 num-complex = "0.2"
-num-traits = "0.2.11"
+num-traits = "0.2"
 rand = "0.7"
 rand_distr = "0.2"
 
