@@ -16,6 +16,22 @@ pub struct Aligned4xf64{
     pub dat: [f64; 4]
 }
 
+impl Aligned4xf64{
+    pub fn sum_reduce(&self) -> f64 {
+        self.dat.iter().sum()
+    }
+    pub fn mean_reduce(&self) -> f64 {
+        self.sum_reduce() / 4.0
+    }
+    pub fn sum_sq_reduce(&self) -> f64{
+        self.dat.iter().map(|&x| x*x).sum()
+    }
+    pub fn mean_sq_reduce(&self) -> f64{
+        self.sum_sq_reduce() / 4.0
+    }
+
+}
+
 //impl<'a> Packet<f64, P4, A32> for Aligned4xf64{
 //    type ArrayT = [f64; 4];
 //    type SliceT = &'a [f64; 4];
