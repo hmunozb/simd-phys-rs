@@ -128,7 +128,7 @@ pub fn cross_exponential_vector3d(
     let mut omega_sq_mat : Matrix3d4xf64 = Zero::zero();
     omega_sq_mat[(0,0)] = -(ay_sq + az_sq);  omega_sq_mat[(0,1)] = a[0] * a[1];  omega_sq_mat[(0,2)] = a[0] * a[2];
     omega_sq_mat[(1,0)] = omega_sq_mat[(0, 1)]; omega_sq_mat[(1,1)] = -(ax_sq + az_sq); omega_sq_mat[(1,2)] = a[1] * a[2];
-    omega_sq_mat[(2,0)] = omega_sq_mat[(2, 0)]; omega_sq_mat[(2, 1)] = omega_sq_mat[(1, 2)]; omega_sq_mat[(2,2)] = -(ax_sq + ay_sq);
+    omega_sq_mat[(2,0)] = omega_sq_mat[(0, 2)]; omega_sq_mat[(2, 1)] = omega_sq_mat[(1, 2)]; omega_sq_mat[(2,2)] = -(ax_sq + ay_sq);
 
 
     let sinc_a_norm = s_arr * rc_a_norm;
