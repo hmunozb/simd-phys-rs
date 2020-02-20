@@ -328,16 +328,15 @@ impl AbstractRing for Aligned4xf64{ }
 impl AbstractRingCommutative for Aligned4xf64{ }
 
 
-//#[cfg(test)]
+#[cfg(test)]
 pub mod tests{
     use crate::vf64::Aligned4xf64;
-    use crate::vf64::add_assign_4xf64;
-    #[allow(dead_code)]
-    //#[test]
+
+    #[test]
     pub fn test_aligned_4xf64(){
         let mut a = Aligned4xf64::from([1.0, 2.0, 3.0, 4.0]);
         let b = Aligned4xf64::from([8.0, 7.0, 6.0, 5.0]);
-        unsafe{let c1 = add_assign_4xf64(&mut a, &b);}
+        //unsafe{let c1 = add_assign_4xf64(&mut a, &b);}
         let c = a + b;
     }
 }
