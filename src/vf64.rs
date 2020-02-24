@@ -1,7 +1,7 @@
 use crate::aligned::{Packet, P4, A32};
 
 use core::ops::{Add, AddAssign, Mul, MulAssign, SubAssign, Sub, Neg};
-use num_traits::{Zero, One};
+use num_traits::{Zero, One, FromPrimitive};
 use num_traits::Num;
 use rand::Rng;
 use rand_distr::{StandardNormal, Distribution};
@@ -288,6 +288,22 @@ impl Neg for Aligned4xf64{
             *a *= -1.0;
         }
         me
+    }
+}
+
+impl FromPrimitive for Aligned4xf64{
+    fn from_i64(n: i64) -> Option<Self> {
+        let n  = f64::from_i64(n);
+        n.map(|f| Aligned4xf64::from(f))
+    }
+
+    fn from_u64(n: u64) -> Option<Self> {
+        let n  = f64::from_u64(n);
+        n.map(|f| Aligned4xf64::from(f))
+    }
+
+    fn from_f64(n: f64) -> Option<Self> {
+        Some(Aligned4xf64::from(n))
     }
 }
 
