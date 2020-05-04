@@ -2,6 +2,7 @@ use core::ops::{Add, AddAssign, Mul, MulAssign, SubAssign, Sub, Neg};
 use num_traits::{Zero};
 use num_complex::Complex64 as c64;
 use crate::vf64::Aligned4xf64;
+use std::fmt;
 
 #[inline]
 #[cfg(target_feature="avx")]
@@ -37,6 +38,12 @@ unsafe fn mul_2xc64(a0: c64, a1: c64, b0: c64, b1: c64) -> (c64, c64){
 #[repr(C, align(32))]
 pub struct Aligned4xc64{
     pub dat: [c64; 4]
+}
+
+impl fmt::Display for Aligned4xc64{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "[ {}, {}, {}, {} ]", self.dat[0], self.dat[1], self.dat[2], self.dat[3] )
+    }
 }
 
 impl MulAssign<f64> for Aligned4xc64{

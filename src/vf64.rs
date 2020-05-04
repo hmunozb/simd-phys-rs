@@ -9,6 +9,8 @@ use std::ops::{Div, DivAssign};
 use alga::general::{Ring, AbstractGroup, Additive, TwoSidedInverse, AbstractMagma, AbstractMonoid,
                     AbstractSemigroup, AbstractQuasigroup, AbstractLoop, Identity, AbstractRing,
                     Multiplicative, AbstractRingCommutative, AbstractGroupAbelian};
+use std::fmt;
+use std::fmt::Formatter;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[repr(C, align(32))]
@@ -30,6 +32,12 @@ impl Aligned4xf64{
         self.sum_sq_reduce() / 4.0
     }
 
+}
+
+impl fmt::Display for Aligned4xf64{
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "[ {}, {}, {}, {} ]", self.dat[0], self.dat[1], self.dat[2], self.dat[3] )
+    }
 }
 
 //impl<'a> Packet<f64, P4, A32> for Aligned4xf64{
